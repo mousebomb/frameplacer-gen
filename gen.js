@@ -52,7 +52,13 @@ class CanvasGen
     if ( ++this.curIndex > this._frameCount) return;
 
     let png = this.paintFrame(this.curIndex / this._frameCount);
-    this.saveFrame(png, this._filePrefixString + CanvasGen.padString(this.curIndex, 4) + ".png");
+    if ( this._frameCount === 1 )
+    {
+      //不需要动画 ；单帧
+      this.saveFrame(png, this._filePrefixString + ".png");
+    }else{
+      this.saveFrame(png, this._filePrefixString + CanvasGen.padString(this.curIndex, 4) + ".png");
+    }
 
   }
 
@@ -69,6 +75,7 @@ class CanvasGen
 
     //计算color
     let color = this._themeColor;
+    let strokeColor = "#ffffff";
     if ( this._isFadeIn && this._isFadeOut)
     {
       if ( animPercent<0.5)
@@ -111,7 +118,7 @@ let fontSize = Math.floor(maxFontSize * scale);
     // Write textString
     this.ctx.font = fontSize + 'px Impact';
     this.ctx.fillStyle = color;
-    this.ctx.strokeStyle = '#ffffff';
+    this.ctx.strokeStyle = CanvasGen.getStrokeColor(color);
     this.ctx.textAlign = 'center';
     this.ctx.textBaseline = 'middle';
     let halfW = this._frameSizeW*0.5;
@@ -167,10 +174,26 @@ let fontSize = Math.floor(maxFontSize * scale);
 
   static getColor(animPercent, _themeColor)
   {
-    return _themeColor + this.padString(Math.round(animPercent * 255).toString(16) ,2);
+    let alphaNumber = Math.max(15,Math.round(animPercent * 255) );
+    return _themeColor + this.padString(alphaNumber.toString(16) ,2);
+  }
+  static getStrokeColor ( fillColor )
+  {
+    return "#ffffff" + fillColor.substr(6,2);
   }
 }
 
 
-let gen=new CanvasGen("毒","#ffff00",100,100,1,5,"buff_du_",false,true,false,true);
+// let gen=new CanvasGen("毒","#ffff00",100,100,1,5,"buff_du_",false,true,false,true);
+// let gen=new CanvasGen("炸弹","#bbbbbb",100,100,1,1,"battleitem01",false,false,false,false);
+// let gen=new CanvasGen("火道","#bbbbbb",100,100,1,1,"battleitem02",false,false,false,false);
+// let gen=new CanvasGen("火枪","#bbbbbb",100,100,1,1,"battleitem03",false,false,false,false);
+// let gen=new CanvasGen("冰道","#bbbbbb",100,100,1,1,"battleitem04",false,false,false,false);
+// let gen=new CanvasGen("冰棺","#bbbbbb",100,100,1,1,"battleitem05",false,false,false,false);
+// let gen=new CanvasGen("龙枪","#bbbbbb",100,100,1,1,"battleitem06",false,false,false,false);
+// let gen=new CanvasGen("爆炸","#ff0000",100,100,1,8,"explosion",false,true,false,false);
+// let gen=new CanvasGen("燃烧","#ff0000",80,80,1,4,"burning",false,true,false,false);
+// let gen=new CanvasGen("喷火","#ff0000",400,80,1,4,"fireline",false,true,false,false);
+// let gen=new CanvasGen("清直线","#000000",400,40,1,14,"killline",false,true,false,true);
+let gen=new CanvasGen("精神加持","#ffff00",500,500,1,5,"spiritbuff",false,true,true,false);
 gen.run();
