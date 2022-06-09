@@ -51,8 +51,8 @@ class BoundingBoxFix
     this.batchImgFiles(this._filePrefixString, (fileName,fileNameBackup) => {
       fs.renameSync(fileName,fileNameBackup);
       var oldImg =images(fileNameBackup);
-      var offsetX = this._destW-oldImg.width();
-      var offsetY = this._destH -oldImg.height();
+      var offsetX = (this._destW-oldImg.width())/2;
+      var offsetY = (this._destH -oldImg.height())/2;
       images(this._destW,this._destH)
         .draw(oldImg,offsetX,offsetY)
         .save(fileName);
